@@ -23,13 +23,7 @@ var User = sequelize.define('user', {
     });
 
 app.get('/log_in', function(req,res){
-    var post = req.body;
-  if (post.username === User.findAOne({where:{req.body.username}}) && post.password === User.findOne({where:{post.password}})) {
-    
-    res.redirect('/');
-  } else {
-    res.send('Bad user/pass');
-  }
+   
 });
 
 app.get('/sing_up', function(req,res){
