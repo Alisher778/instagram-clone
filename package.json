@@ -1,0 +1,20 @@
+{
+  "name": "instagram",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.3",
+    "express": "^4.14.0",
+    "nodemon": "^1.11.0",
+    "password-hash": "^1.2.2",
+    "sequelize": "^3.27.0",
+    "sqlite3": "^3.1.8"
+  }
+}

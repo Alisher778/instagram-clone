@@ -1,0 +1,17 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `username` VARCHAR(255), `password` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL);
+INSERT INTO "users" VALUES(1,'ali@example.com','alisher66','2016-12-02 01:47:49.615 +00:00','2016-12-02 01:47:49.615 +00:00');
+INSERT INTO "users" VALUES(2,'ali@example.com','alisher66','2016-12-02 01:48:35.977 +00:00','2016-12-02 01:48:35.977 +00:00');
+INSERT INTO "users" VALUES(3,'ali@example.com','alisher66','2016-12-02 01:49:02.315 +00:00','2016-12-02 01:49:02.315 +00:00');
+INSERT INTO "users" VALUES(4,'ali@example.com','alisher66','2016-12-02 01:50:31.201 +00:00','2016-12-02 01:50:31.201 +00:00');
+INSERT INTO "users" VALUES(5,'ali@example.com','alisher66','2016-12-02 01:50:34.167 +00:00','2016-12-02 01:50:34.167 +00:00');
+INSERT INTO "users" VALUES(6,'ali@example.com','sha1$7ef770aa$1$1e7ad8bbb8e889c1ea1d5374895e3b954d9c167d','2016-12-02 01:51:24.092 +00:00','2016-12-02 01:51:24.092 +00:00');
+INSERT INTO "users" VALUES(7,'ali@example.com','sha1$2c978b16$1$ae92ab0449a48107b405804fd3d9f7350c432cc8','2016-12-02 01:52:28.764 +00:00','2016-12-02 01:52:28.764 +00:00');
+INSERT INTO "users" VALUES(8,'ali@example.com','sha1$a2720df5$1$34c8589aad46a6eb3ebbf49620ff2cfb61e1272a','2016-12-02 01:53:23.044 +00:00','2016-12-02 01:53:23.044 +00:00');
+INSERT INTO "users" VALUES(9,'ali@example.com','sha1$0199780d$1$bd90acd918c219f39a1da037474bd8a34df3f50a','2016-12-02 01:54:04.466 +00:00','2016-12-02 01:54:04.466 +00:00');
+INSERT INTO "users" VALUES(10,'ali@example.com','sha1$0a648a8a$1$97ee6e3f6081ed19ce426d8c1025881b35cc9790','2016-12-02 01:54:10.545 +00:00','2016-12-02 01:54:10.545 +00:00');
+INSERT INTO "users" VALUES(11,'ali@example.com','sha1$86cd5e4d$1$71341eef3de8fc28ce28d75a58e3d763bcb31e0c','2016-12-02 01:54:45.679 +00:00','2016-12-02 01:54:45.679 +00:00');
+DELETE FROM sqlite_sequence;
+INSERT INTO "sqlite_sequence" VALUES('users',11);
+COMMIT;
