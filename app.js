@@ -1,53 +1,60 @@
 var express = require('express');
 var app = express();
-var bodyParser = require('body-parser');
 var Sequelize = require('sequelize');
-var database = 'sqlite://databse.sqlite3';
-var sequelize = new Sequelize(process.env.DATABASE_URL || database)
-var cookieSession = require('cookie-session');
-var passwordHash = require('password-hash');
+var databaseURL = 'sqlite://database.sqlite3';
+var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
+var fs = require('fs');
 var port = 3000;
+var multer = require('multer');
+var upload = multer({ dest: 'public/images/uploads/' })
+var bodyParser = require('body-parser');
+var passwordHash = require('password-hash');
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-
+// Home page of Instagram page
 app.get('/', function(req, res){
-  res.send('Welcome to home Page');
+    res.render('pages/index');
 });
 
-var User = sequelize.define('user', {
-        username: Sequelize.STRING,
-        password: Sequelize.STRING
+// Users sign up Page ------------
+
+// Get USer info from form
+var User = sequelize.define('user',{
+        firstName: Sequelize.STRING,
+        lastName: Sequelize.STRING,
+        email: Sequelize.STRING,
+        password: Sequelize.STRING,
+        images: Sequelize.STRING
     });
 
-app.get('/log_in', function(req,res){
-   
-});
-
-app.get('/sing_up', function(req,res){
-    var User = sequelize.define('user', {
-        username: Sequelize.STRING,
-        password: Sequelize.STRING
-    });
+app.get('/sign_up', function(req, res){
     res.render('users/new');
 });
 
-app.post('/user/sign_up', function(req,res){
+//Post the USer info for Show Page
+app.post('/user/sign_up', upload.single('images'), function(req, res){
     sequelize.sync().then(function(){
         return User.create({
-            username: req.body.username,
-            password: passwordHash.generate(req.body.password)
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            password: passwordHash.generate(req.body.password),
+            images: req.file.path
         }).then(function(users){
-            var hashedPassword = passwordHash.generate(req.body.password);
-            console.log(hashedPassword);
-            console.log(passwordHash.verify(req.body.password, hashedPassword));
             res.render('users/show', {user:users});
+            console.log(req.file);
         });
-    })
-});
+    });
+})
+
+//Upload page
+app.get("/")
 
 app.listen(port, function(){
-  console.log('Server is running on  port' + port);
+  console.log('Server started on port'+port);
 });

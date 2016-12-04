@@ -1,17 +1,26 @@
 {
-  "name": "instagram",
+  "name": "group",
   "version": "1.0.0",
-  "main": "app.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alisher778/instagram-clone.git"
+  },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "bugs": {
+    "url": "https://github.com/Alisher778/instagram-clone/issues"
+  },
+  "homepage": "https://github.com/Alisher778/instagram-clone#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "ejs": "^2.5.3",
     "express": "^4.14.0",
+    "multer": "^1.2.0",
     "nodemon": "^1.11.0",
     "password-hash": "^1.2.2",
     "sequelize": "^3.27.0",
