@@ -1,21 +1,37 @@
 <% include ../template/header.ejs %>
 
+  <form action="/user/sign_up" method="post" enctype="multipart/form-data">
+    <fieldset>
+      <p>
+        <label for="username">First Name:</label><br>
+        <input type="text" name="firstName" />
+      </p>
+      <p>
+        <label for="username">Last Name:</label><br>
+        <input type="text" name="lastName" />
+      </p>
+      <p>
+        <label for="username">User name:</label><br>
+        <input type="text" name="userName" />
+      </p>
+      <p>
+        <label for="username">Email:</label><br>
+        <input type="email" name="email" />
+      </p>
+      <p>
+        <label for="password">Password</label><br>
+        <input type="password" name="password" />
+      </p>
+      <p>
+        <label for="username">Last Name:</label><br>
+        <input type="file" name="images" />
+      </p>
+      <input type="submit">
+    </fieldset>
+  </form>
 
 
-<form action="/user/sign_up" method="post" enctype="multipart/form-data">
-
-  First Name:<input type="text" name="firstName"><br>
-  Last Name<input type="text" name="lastName"><br>
-  Email:<input type="email" name="email"><br>
-  Password: <input type="password" name="password"><br>
-  Upload<input type="file" name="images"><br>
-  <input type="submit">
-
-</form>
-
-
-
-
+<% include ../template/footer.ejs %>
 
 
 

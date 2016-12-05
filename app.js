@@ -6,7 +6,16 @@ var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
 var fs = require('fs');
 var port = 3000;
 var multer = require('multer');
-var upload = multer({ dest: 'public/images/uploads/' })
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/images/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  }
+})
+
+var upload = multer({ storage: storage });
 var bodyParser = require('body-parser');
 var passwordHash = require('password-hash');
 
@@ -44,7 +53,7 @@ app.post('/user/sign_up', upload.single('images'), function(req, res){
             lastName: req.body.lastName,
             email: req.body.email,
             password: passwordHash.generate(req.body.password),
-            images: req.file.path
+            images: req.file.filename
         }).then(function(users){
             res.render('users/show', {user:users});
             console.log(req.file);
