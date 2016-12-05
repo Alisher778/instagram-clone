@@ -34,9 +34,9 @@ app.get('/', function(req, res){
 
 // Get USer info from form
 var User = sequelize.define('user',{
-        firstName: Sequelize.STRING,
-        lastName: Sequelize.STRING,
         email: Sequelize.STRING,
+        fullName: Sequelize.STRING,
+        userName: Sequelize.STRING,
         password: Sequelize.STRING,
         images: Sequelize.STRING
     });
@@ -49,14 +49,13 @@ app.get('/sign_up', function(req, res){
 app.post('/user/sign_up', upload.single('images'), function(req, res){
     sequelize.sync().then(function(){
         return User.create({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
             email: req.body.email,
+            fullName: req.body.fullName,
+            userName: req.body.userName,
             password: passwordHash.generate(req.body.password),
             images: req.file.filename
         }).then(function(users){
-            res.render('users/show', {user:users});
-            console.log(req.file);
+            res.redirect('/');
         });
     });
 })
