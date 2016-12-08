@@ -1,6 +1,6 @@
-var Sequelize = require('sequelize');
+
+  var Sequelize = require('sequelize');
   var databaseURL = 'sqlite://database.sqlite3';
-  var Uploads = require('./uploads')
   var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
   var passwordHash = require('password-hash');
   
@@ -10,6 +10,17 @@ var Sequelize = require('sequelize');
         userName: Sequelize.STRING,
         password: Sequelize.STRING,
         images: Sequelize.STRING
-    });
-  // User.hasMany(Uploads)
-  module.exports = User;
+    })
+     
+    var Uploads = sequelize.define('upload', {
+        fileName: Sequelize.STRING,
+        userId: Sequelize.INTEGER
+  });
+
+User.hasMany(Uploads)
+Uploads.belongsTo(User);
+
+
+
+module.exports = User;
+module.exports = Uploads;

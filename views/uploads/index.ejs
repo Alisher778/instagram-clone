@@ -1,0 +1,57 @@
+<% include ../template/header.ejs %>
+<% include ../template/nav.ejs %>
+
+
+  
+  
+
+<div class="container">
+
+<% upload.forEach(function(upload){%>
+<div class="col-xs-12 col-md-8 col-md-offset-2">
+<div class="panel panel-default">
+  <div class="panel-image">
+    <img src="/images/uploads/<%= upload.image %>" class="img-fluid" alt="Responsive image" class="panel-image-preview" style="width: 100%; height: 100%"/>
+  </div>
+  <div class="panel-body">
+    <h4><%= upload.title%></h4>
+    <p><%= upload.description%></p>
+  </div>
+  <div class="panel-footer text-center">
+    <a href="/images/<%=upload.image%>" title="Download"><span class="glyphicon glyphicon-download" style="font-size: 24px"></span></a>
+    <ul class="more">
+      <li title="Edit">
+        <a href="/uploads/<%= upload.id %>" class="moreLinks"><span class="glyphicon glyphicon-pencil"></span></a>
+      </li>
+      <li title="Delete">
+        <a href="/delete/<%= upload.image%>/<%= upload.id%>" class="moreLinks"><span class="glyphicon glyphicon-remove"></span></a>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+<%})%>
+</div>
+
+<style>
+  .moreBtn{
+    float: right;
+  }
+  .more{
+    display: inline-block;
+    float: right;
+  }
+  .more li{
+    display: inline;
+    list-style: none;
+    text-align: center;
+    margin: 0 10px;
+  }
+  
+</style>
+<script>
+  $('.moreBtn').click(function(){
+      $(this).next().find('.more');
+  })
+</script>
+<% include ../template/footer.ejs%>

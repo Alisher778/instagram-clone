@@ -1,0 +1,30 @@
+<% include ../template/header.ejs %>
+<% include ../template/nav.ejs %>
+<div class="container" id="uploads">
+  <div class="col-md-8 col-md-offset-2">
+    <form action="uploads/edit" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <input class="form-control" type="file" name="image" multiple="true" required value="<%= upload.image%>" />
+      </div>
+      
+      <div class="form-group">
+        <input class="form-control" name="title" type="text" placeholder="Give a title" value="<%= upload.title%>" /><%= upload.title%>
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" name="description" type="text" placeholder="Write discription" rows="3"><%= upload.title%></textarea>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary form-control" name="submit" type="submit">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% include ../template/footer.ejs%>
+
+<style>
+  #uploads{
+    position: relative;
+    top: 180px;
+  }
+</style>
