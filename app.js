@@ -44,24 +44,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Home page of Instagram page
-app.get('/home', function(req, res){
-    res.render('pages/index');
-});
+// app.get('/', function(req, res){
+//     res.render('pages/index');
+// });
 
 // Users sign up Page ------------
  var User = sequelize.define('user',{
-        email: Sequelize.STRING,
-        fullName: Sequelize.STRING,
-        userName: Sequelize.STRING,
-        password: Sequelize.STRING,
-        images: Sequelize.STRING
-    });
- 
- var Uploads = sequelize.define('upload', {
-  image: Sequelize.STRING,
-  title: Sequelize.STRING,
-  description: Sequelize.TEXT
+    email: Sequelize.STRING,
+    fullName: Sequelize.STRING,
+    userName: Sequelize.STRING,
+    password: Sequelize.STRING,
+    images: Sequelize.STRING
 });
+ 
+var Uploads = sequelize.define('upload', {
+      image: Sequelize.STRING,
+      title: Sequelize.STRING,
+      description: Sequelize.TEXT
+});
+
+var Comments = sequelize.define('comments',{
+    comment: Sequelize.TEXT
+});
+Comments.belongsTo(User);
+Comments.belongsTo(Uploads);
+
 
 app.get('/', function(req, res){
     res.render('users/new');
@@ -105,14 +112,14 @@ app.post('/images/upload', ImageUpload.single('image'), function(req,res){
             title: req.body.title,
             description: req.body.description
         }).then(function(uploads){
-            res.redirect('/images');
+            res.redirect('/home');
             console.log(req.file.path);
         });
     });
 });
 
 //Get all uploaded images
-app.get('/images', function(req, res){
+app.get('/home', function(req, res){
     Uploads.findAll().then(function(uploads){
         res.render('uploads/index', {upload: uploads})
     });
@@ -142,7 +149,7 @@ app.post('/uploads/edit/:id', function(req,res){
         where: {id: req.params.id}
    
     }).then(function(){
-        res.redirect('/images');
+        res.redirect('/home');
     });
   
 });
@@ -158,10 +165,32 @@ app.get('/delete/:image/:id', function(req, res){
         }
     }).then(function(){
        fs.unlink(file);
-        res.redirect('/images');
+        res.redirect('/home');
     });
 });
 
+
+//Comments
+app.get('/comments', function(req,res){
+    res.render('comments/new');
+});
+
+app.get('/com', function(req,res){
+    Comments.findAll().then(function(comment){
+        res.send(comment)
+    });
+    
+});
+
+app.post('/comments/post', function(req,res){
+    sequelize.sync().then(function(){
+        return Comments.create({
+            comment: req.body.comment
+        }).then(function(comment){
+            res.render('uploads/index', {comment: comments});
+        });
+    });
+})
 app.listen(port, function(){
   console.log('Server started on port'+port);
 });
