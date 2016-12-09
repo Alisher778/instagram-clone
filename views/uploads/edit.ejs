@@ -1,30 +1,52 @@
 <% include ../template/header.ejs %>
 <% include ../template/nav.ejs %>
-<div class="container" id="uploads">
-  <div class="col-md-8 col-md-offset-2">
-    <form action="uploads/edit" method="post" enctype="multipart/form-data">
-      <div class="form-group">
-        <input class="form-control" type="file" name="image" multiple="true" required value="<%= upload.image%>" />
+
+<div class="container">
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-image">
+        <img src="/images/uploads/<%= upload.image %>" class="img-fluid" alt="Responsive image" class="panel-image-preview" style="width: 100%; height: 100%"/>
       </div>
-      
-      <div class="form-group">
-        <input class="form-control" name="title" type="text" placeholder="Give a title" value="<%= upload.title%>" /><%= upload.title%>
+      <form action="/uploads/edit/<%= upload.id%>" method="post">
+        <div class="panel-body">
+
+          <div class="form-group">
+            <input class="form-control" name="title" type="text" value="<%= upload.title%>" />
+          </div>
+
+          <div class="form-group">
+            <textarea class="form-control" name="description" type="text" value="<%= upload.description%>" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-primary form-control" name="submit" type="submit">Update</button>
+          </div>
+
+        </form>
+        <div class="panel-footer text-center">
+          <a href="/images/<%=upload.image%>" title="Download"><span class="glyphicon glyphicon-download" style="font-size: 24px"></span></a>
+          <ul class="more">
+            <li title="Delete">
+              <a href="/delete/<%= upload.image%>/<%= upload.id%>" class="moreLinks"><span class="glyphicon glyphicon-remove"></span></a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="form-group">
-        <textarea class="form-control" name="description" type="text" placeholder="Write discription" rows="3"><%= upload.title%></textarea>
-      </div>
-      <div class="form-group">
-        <button class="btn btn-primary form-control" name="submit" type="submit">Update</button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
-
-<% include ../template/footer.ejs%>
-
-<style>
-  #uploads{
-    position: relative;
-    top: 180px;
+  <style>
+  .moreBtn{
+    float: right;
   }
-</style>
+  .more{
+    display: inline-block;
+    float: right;
+  }
+  .more li{
+    display: inline;
+    list-style: none;
+    text-align: center;
+    margin: 0 10px;
+  }
+  
+  <% include ../template/footer.ejs %>

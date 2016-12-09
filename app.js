@@ -106,7 +106,7 @@ app.post('/images/upload', ImageUpload.single('image'), function(req,res){
             description: req.body.description
         }).then(function(uploads){
             res.redirect('/images');
-            console.log(req.files);
+            console.log(req.file.path);
         });
     });
 });
@@ -132,16 +132,19 @@ app.get('/uploads/:id', function(req, res){
 });
 
 //Update the uploads page
-app.post('/uploads/edit',ImageUpload.single('image'), function(req, res){
-    Uploads.findById(req.params.id).then(function(uploads){
-        return uploads.Update({
-            image: req.file.filename,
-            title: req.body.title,
-            description: req.body.description
-        }).then(function(uploads){
-            res.redirect('/images');
-        });
+app.post('/uploads/edit/:id', function(req,res){
+    console.log(req.body);
+    Uploads.update({
+        title: req.body.title,
+        description: req.body.description},
+
+    {
+        where: {id: req.params.id}
+   
+    }).then(function(){
+        res.redirect('/images');
     });
+  
 });
 
 //Delete Uploads file
