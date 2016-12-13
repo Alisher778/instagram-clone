@@ -26,9 +26,16 @@
   </div>
 </div>
 </div>
+  <div class="comments">
+    <ul id="<%=upload.id%>"></ul>
+  </div>
+<form action="/comments/<%= upload.id%>/post" method="post">
+  <textarea name="comment" id="" cols="30" rows="10"></textarea>
+  <input type="submit">
+</form>
+  
 <%})%>
 </div>
-
 <style>
   .moreBtn{
     float: right;
