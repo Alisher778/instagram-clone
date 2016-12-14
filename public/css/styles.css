@@ -55,3 +55,16 @@ ul li {
 .panel-body {
     padding: 1px 10px;
 }
+.timeago{
+    float: left;
+    width: 20%;
+    text-align: center;
+}
+.info{
+    float: left;
+    width: 78%;
+    padding-left: 20px;
+}
+.panel-body{
+    padding: 5px 3px;
+}

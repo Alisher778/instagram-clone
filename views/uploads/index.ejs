@@ -5,8 +5,11 @@
   <div class="col-xs-12 col-md-8 col-md-offset-2">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h4><%= upload.title%></h4>
-        <p><%= upload.description%></p>
+        <div class="info">
+          <h4><%= upload.title%></h4>
+          <p><%= upload.description%></p>
+        </div>
+        <span class="timeago"><%= upload.createdAt%></span>
       </div>
       <div class="panel-image">
         <img src="/images/uploads/<%= upload.image %>" class="img-fluid" alt="Responsive image" class="panel-image-preview" style="width: 100%; height: 100%"/>
@@ -35,6 +38,7 @@
           <a href="/delete/<%= upload.image%>/<%= upload.id%>" class="moreLinks"><span class="glyphicon glyphicon-remove"></span></a>
         </li>
       </ul>
+      <div id="<%=upload.id%>s"></div>
     </div>
   </div>
 </div>

@@ -10,6 +10,7 @@ var http = require('http');
 var port = 3000;
 var pg = require('pg');
 
+
 var multer = require('multer');
 //User profile folder
 var userStorage = multer.diskStorage({
@@ -72,6 +73,13 @@ var Comments = sequelize.define('comments', {
     uploadId: Sequelize.INTEGER
 });
 
+var Like = sequelize.define('like',{
+    like: Sequelize.INTEGER,
+    
+    uploadId: Sequelize.INTEGER
+})
+
+Uploads.hasMany(Like)
 // Comments.belongsTo(Uploads, {foreignkey});
 Uploads.hasMany(Comments);
 Comments.belongsTo(Uploads);
@@ -129,7 +137,7 @@ app.post('/images/upload', ImageUpload.single('image'), function(req, res) {
 
 //Get all uploaded images
 app.get('/home', function(req, res) {
-    Uploads.findAll().then(function(uploads) {
+    Uploads.findAll({order: '"createdAt" DESC'}).then(function(uploads) {
         res.render('uploads/index', {
             upload: uploads
         })
@@ -153,7 +161,6 @@ app.get('/uploads/:id', function(req, res) {
 
 //Update the uploads page
 app.post('/uploads/edit/:id', function(req, res) {
-    console.log(req.body);
     Uploads.update({
             title: req.body.title,
             description: req.body.description
@@ -212,7 +219,7 @@ app.post('/comments/:uploadID/post', function(req, res) {
             uploadId: id
         }).then(function(comments) {
             
-            res.redirect('/home')
+            res.redirect('/home#'+id+'s')
         });
     });
 });

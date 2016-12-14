@@ -21,6 +21,26 @@ $(document).ready(function(){
 
     })
     
+    //Post Comments
 
+    // $(function(){
+    //     var uploadId = $('.comments ul').attr('id');
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/comments/"+uploadId+"/post",
+    //         data: $('input#commentsForm').val(),
+    //         success: function(comment){
+    //             $('.comments.uploadId').append('<li>'+comment+'</li>');
+    //         }
+    //     })
+    // })
+
+
+    //Converting time into words
+    var d = $('span.timeago');
+    for(var i =0; i <d.length; i++){
+        var string = $(d[i]).text().slice(2,24);
+        d.text(string);
+    }
 
 });
