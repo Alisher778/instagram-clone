@@ -7,7 +7,6 @@ var databaseURL = 'sqlite://database.sqlite3';
 var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
 var fs = require('fs');
 var http = require('http');
-var port = 3000;
 var pg = require('pg');
 
 
@@ -75,7 +74,6 @@ var Comments = sequelize.define('comments', {
 
 var Like = sequelize.define('like',{
     like: Sequelize.INTEGER,
-    
     uploadId: Sequelize.INTEGER
 })
 
@@ -234,6 +232,8 @@ app.get('/comments/:id', function(req, res){
     })
 });
 
+
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
 });
+
