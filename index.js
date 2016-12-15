@@ -77,8 +77,6 @@ var Like = sequelize.define('like',{
     uploadId: Sequelize.INTEGER
 })
 
-Uploads.hasMany(Like)
-// Comments.belongsTo(Uploads, {foreignkey});
 Uploads.hasMany(Comments);
 Comments.belongsTo(Uploads);
 
