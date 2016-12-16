@@ -8,11 +8,27 @@ var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
 var fs = require('fs');
 var http = require('http');
 var pg = require('pg');
-var aws = require('aws-sdk');
-var S3_BUCKET = process.env.S3_BUCKET;
-
+var s3 = require( 'multer-storage-s3' );
+require( 'dotenv' ).load();
 var multer = require('multer');
 //User profile folder
+var userStorage = s3({
+    destination : function( req, file, cb ) {
+        
+        cb( null, './public/images/users' );
+        
+    },
+    filename    : function( req, file, cb ) {
+        
+        cb( null, Date.now() + file.originalname );
+        
+    },
+    bucket      : 'bucket-name',
+    region      : 'us-west-2'
+});
+
+var upload = multer({ storage: userStorage });
+
 var userStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './public/images/users')
@@ -26,6 +42,21 @@ var upload = multer({
 });
 
 // Image uploads
+var storage = s3({
+    destination : function( req, file, cb ) {
+        
+        cb( null, './public/images/uploads' );
+        
+    },
+    filename    : function( req, file, cb ) {
+        
+        cb( null, Date.now() + file.originalname );
+        
+    },
+    bucket      : 'bucket-name',
+    region      : 'us-west-2'
+});
+var ImageUpload = multer({ storage: storage });
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -80,35 +111,6 @@ var Like = sequelize.define('like',{
 
 Uploads.hasMany(Comments);
 Comments.belongsTo(Uploads);
-
-
-app.get('/sign-s3', (req, res) => {
-  const s3 = new aws.S3();
-  const fileName = req.query['file-name'];
-  const fileType = req.query['file-type'];
-  const s3Params = {
-    Bucket: S3_BUCKET,
-    Key: fileName,
-    Expires: 60,
-    ContentType: fileType,
-    ACL: 'public-read'
-  };
-
-  s3.getSignedUrl('putObject', s3Params, (err, data) => {
-    if(err){
-      console.log(err);
-      return res.end();
-    }
-    const returnData = {
-      signedRequest: data,
-      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-    };
-    res.write(JSON.stringify(returnData));
-    res.end();
-  });
-});
-
-
 
 
 app.get('/', function(req, res) {
