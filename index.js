@@ -8,27 +8,10 @@ var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
 var fs = require('fs');
 var http = require('http');
 var pg = require('pg');
-var s3 = require( 'multer-storage-s3' );
-require( 'dotenv' ).load();
+
+
 var multer = require('multer');
 //User profile folder
-var userStorage = s3({
-    destination : function( req, file, cb ) {
-        
-        cb( null, './public/images/users' );
-        
-    },
-    filename    : function( req, file, cb ) {
-        
-        cb( null, Date.now() + file.originalname );
-        
-    },
-    bucket      : 'bucket-name',
-    region      : 'us-west-2'
-});
-
-var upload = multer({ storage: userStorage });
-
 var userStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './public/images/users')
@@ -42,21 +25,6 @@ var upload = multer({
 });
 
 // Image uploads
-var storage = s3({
-    destination : function( req, file, cb ) {
-        
-        cb( null, './public/images/uploads' );
-        
-    },
-    filename    : function( req, file, cb ) {
-        
-        cb( null, Date.now() + file.originalname );
-        
-    },
-    bucket      : 'bucket-name',
-    region      : 'us-west-2'
-});
-var ImageUpload = multer({ storage: storage });
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -66,6 +34,7 @@ var storage = multer.diskStorage({
         cb(null, Date.now() + file.originalname);
     }
 })
+
 var ImageUpload = multer({
     storage: storage
 });
@@ -88,7 +57,10 @@ app.set('port', (process.env.PORT || 3000));
 var User = sequelize.define('user', {
     email: Sequelize.STRING,
     fullName: Sequelize.STRING,
-    userName: Sequelize.STRING,
+    userName: {
+        type: Sequelize.STRING,
+        unique: true
+    },
     password: Sequelize.STRING,
     images: Sequelize.STRING
 });
@@ -117,7 +89,7 @@ app.get('/', function(req, res) {
     res.render('users/new');
 });
 
-//Post the USer info for Show Page
+// User info for Show Page
 app.post('/user/sign_up', upload.single('images'), function(req, res) {
     sequelize.sync().then(function() {
         return User.create({
