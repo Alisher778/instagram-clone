@@ -1,17 +1,36 @@
 var express = require('express');
 var app = express();
 var Sequelize = require('sequelize');
-var User = require('./user');
-var Uploads = require('./uploads');
 var databaseURL = 'sqlite://database.sqlite3';
 var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
 var fs = require('fs');
 var http = require('http');
 var pg = require('pg');
-
+var aws = require('aws-sdk');
+var s3 = require('multer-storage-s3');
+var multerS3 = require('multer-s3');
 
 var multer = require('multer');
 //User profile folder
+var userStorage = s3({
+    destination: function(req, file, cb) {
+
+        cb(null, 'upload/users');
+
+    },
+    filename: function(req, file, cb) {
+
+        cb(null, Date.now() + file.originalname);
+
+    },
+    bucket: 'bucket-name',
+    region: 'us-west-2'
+});
+
+var upload = multer({
+    storage: userStorage
+});
+
 var userStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './public/images/users')
@@ -25,6 +44,23 @@ var upload = multer({
 });
 
 // Image uploads
+var storage = s3({
+    destination: function(req, file, cb) {
+
+        cb(null, 'upload/uploads');
+
+    },
+    filename: function(req, file, cb) {
+
+        cb(null, Date.now() + file.originalname);
+
+    },
+    bucket: 'bucket-name',
+    region: 'us-west-2'
+});
+var ImageUpload = multer({
+    storage: storage
+});
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -76,7 +112,7 @@ var Comments = sequelize.define('comments', {
     uploadId: Sequelize.INTEGER
 });
 
-var Like = sequelize.define('like',{
+var Like = sequelize.define('like', {
     like: Sequelize.INTEGER,
     uploadId: Sequelize.INTEGER
 })
@@ -137,7 +173,9 @@ app.post('/images/upload', ImageUpload.single('image'), function(req, res) {
 
 //Get all uploaded images
 app.get('/home', function(req, res) {
-    Uploads.findAll({order: '"createdAt" DESC'}).then(function(uploads) {
+    Uploads.findAll({
+        order: '"createdAt" DESC'
+    }).then(function(uploads) {
         res.render('uploads/index', {
             upload: uploads
         })
@@ -218,18 +256,19 @@ app.post('/comments/:uploadID/post', function(req, res) {
             comment: req.body.comment,
             uploadId: id
         }).then(function(comments) {
-            
-            res.redirect('/home#'+id+'s')
+
+            res.redirect('/home#' + id + 's')
         });
     });
 });
 
-app.get('/comments/:id', function(req, res){
+app.get('/comments/:id', function(req, res) {
     var id = req.params.id;
-    Comments.findAll({where: {
-        uploadId: id
+    Comments.findAll({
+        where: {
+            uploadId: id
         }
-    }).then(function(comment){
+    }).then(function(comment) {
         res.send(comment);
     })
 });
@@ -238,4 +277,3 @@ app.get('/comments/:id', function(req, res){
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
 });
-
