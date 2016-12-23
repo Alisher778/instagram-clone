@@ -1,35 +1,20 @@
-var express = require('express');
-var app = express();
-var Sequelize = require('sequelize');
-var databaseURL = 'sqlite://database.sqlite3';
-var sequelize = new Sequelize(process.env.DATABASE_URL || databaseURL);
-var fs = require('fs');
-var http = require('http');
-var pg = require('pg');
-var aws = require('aws-sdk');
-var s3 = require('multer-storage-s3');
-var multerS3 = require('multer-s3');
+var express       = require('express');
+var app           = express();
+var Sequelize     = require('sequelize');
+var databaseURL   = 'sqlite://database.sqlite3';
+var sequelize     = new Sequelize(process.env.DATABASE_URL || databaseURL);
+var fs            = require('fs');
+var http          = require('http');
+var pg            = require('pg');
+var aws           = require('aws-sdk');
+var s3            = require('multer-storage-s3');
+var multerS3      = require('multer-s3');
+var multer        = require('multer');
+var bodyParser    = require('body-parser');
+var cookieParser  = require('cookie-parser');
+var passwordHash  = require('password-hash');
+var session       = require('express-session');
 
-var multer = require('multer');
-//User profile folder
-var userStorage = s3({
-    destination: function(req, file, cb) {
-
-        cb(null, 'upload/users');
-
-    },
-    filename: function(req, file, cb) {
-
-        cb(null, Date.now() + file.originalname);
-
-    },
-    bucket: 'bucket-name',
-    region: 'us-west-2'
-});
-
-var upload = multer({
-    storage: userStorage
-});
 
 var userStorage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -41,25 +26,6 @@ var userStorage = multer.diskStorage({
 })
 var upload = multer({
     storage: userStorage
-});
-
-// Image uploads
-var storage = s3({
-    destination: function(req, file, cb) {
-
-        cb(null, 'upload/uploads');
-
-    },
-    filename: function(req, file, cb) {
-
-        cb(null, Date.now() + file.originalname);
-
-    },
-    bucket: 'bucket-name',
-    region: 'us-west-2'
-});
-var ImageUpload = multer({
-    storage: storage
 });
 
 var storage = multer.diskStorage({
@@ -75,18 +41,18 @@ var ImageUpload = multer({
     storage: storage
 });
 
-
-var bodyParser = require('body-parser');
-var passwordHash = require('password-hash');
-
-
 app.set('view engine', 'ejs');
+app.set('port', (process.env.PORT || 3000));
+app.set('trust proxy', 1) // trust first proxy 
+
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.set('port', (process.env.PORT || 3000));
+// app.use(require('connect-multiparty')());
+app.use(cookieParser());
+app.use(session({ secret: 'super-secret' }));
 
 
 // Users sign up Page ------------
@@ -100,6 +66,7 @@ var User = sequelize.define('user', {
     password: Sequelize.STRING,
     images: Sequelize.STRING
 });
+
 
 var Uploads = sequelize.define('upload', {
     image: Sequelize.STRING,
