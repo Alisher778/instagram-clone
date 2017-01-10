@@ -1,0 +1,12 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `email` VARCHAR(255), `fullName` VARCHAR(255), `userName` VARCHAR(255), `password` VARCHAR(255), `images` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL);
+INSERT INTO "users" VALUES(12,'alisher.musurmonov89@gmail.com','Alisher Musurmonov','ali@example.com','sha1$b764c84a$1$c2e0b01ef8bbc55e8b21b3fd61788eca76205f25',NULL,'2017-01-10 22:50:51.233 +00:00','2017-01-10 22:50:51.233 +00:00');
+CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `image` VARCHAR(255), `title` VARCHAR(255), `description` TEXT, `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL);
+CREATE TABLE `comments` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `comment` TEXT, `uploadId` INTEGER REFERENCES `uploads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL);
+CREATE TABLE `likes` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `like` INTEGER, `uploadId` INTEGER, `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL);
+DELETE FROM sqlite_sequence;
+INSERT INTO "sqlite_sequence" VALUES('users',12);
+INSERT INTO "sqlite_sequence" VALUES('uploads',12);
+INSERT INTO "sqlite_sequence" VALUES('comments',17);
+COMMIT;

@@ -7,39 +7,70 @@ var fs            = require('fs');
 var http          = require('http');
 var pg            = require('pg');
 var aws           = require('aws-sdk');
-var s3            = require('multer-storage-s3');
-var multerS3      = require('multer-s3');
 var multer        = require('multer');
+var multerS3      = require('multer-s3');
 var bodyParser    = require('body-parser');
 var cookieParser  = require('cookie-parser');
 var passwordHash  = require('password-hash');
 var session       = require('express-session');
+var moment        = require('moment');
 
 
-var userStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './public/images/users')
-    },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + file.originalname);
-    }
-})
-var upload = multer({
-    storage: userStorage
+aws.config.update({
+    secretAccessKey: process.env.SECRETACCESSKEY,
+    accessKeyId: process.env.ACCESSKEYID,
+    region: 'us-east-1'
 });
 
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './public/images/uploads')
-    },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + file.originalname);
-    }
-})
+var s3 = new aws.S3();
 
-var ImageUpload = multer({
-    storage: storage
+var userUpload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'clone-of-instagram/users',
+        key: function (req, file, cb) {
+            console.log(file);
+            cb(null, Date.now() + file.originalname);
+        }
+    })
 });
+
+var postUploads = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'clone-of-instagram/uploads',
+        key: function (req, file, cb) {
+            console.log(file);
+            cb(null, Date.now() + file.originalname);
+        }
+    })
+});
+
+
+// var userStorage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, './public/images/users')
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, Date.now() + file.originalname);
+//     }
+// })
+// var userUpload = multer({
+//     storage: userStorage
+// });
+
+// var storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, './public/images/uploads')
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, Date.now() + file.originalname);
+//     }
+// })
+
+// var postUploads = multer({
+//     storage: storage
+// });
 
 app.set('view engine', 'ejs');
 app.set('port', (process.env.PORT || 3000));
@@ -93,14 +124,15 @@ app.get('/', function(req, res) {
 });
 
 // User info for Show Page
-app.post('/user/sign_up', upload.single('images'), function(req, res) {
+app.post('/user/sign_up', userUpload.single('images'), function(req, res) {
+    console.log(req.file);
     sequelize.sync().then(function() {
         return User.create({
             email: req.body.email,
             fullName: req.body.fullName,
             userName: req.body.userName,
             password: passwordHash.generate(req.body.password),
-            images: req.file.filename
+            images: req.file.location
         }).then(function(users) {
             res.redirect('/home');
         });
@@ -125,15 +157,14 @@ app.get("/uploads", function(req, res) {
 });
 
 //Create upload images page
-app.post('/images/upload', ImageUpload.single('image'), function(req, res) {
+app.post('/images/upload', postUploads.single('image'), function(req, res) {
     sequelize.sync().then(function() {
         return Uploads.create({
-            image: req.file.filename,
+            image: req.file.location,
             title: req.body.title,
             description: req.body.description
         }).then(function(uploads) {
             res.redirect('/home');
-            console.log(req.file.path);
         });
     });
 });
@@ -152,7 +183,8 @@ app.get('/home', function(req, res) {
 //Downloading images
 app.get('/images/:id', function(req, res) {
     var id = req.params.id;
-    var file = __dirname + '/public/images/uploads/' + id;
+    var file = req.file.location;
+    console.log(file);
     res.download(file);
 })
 
@@ -183,16 +215,15 @@ app.post('/uploads/edit/:id', function(req, res) {
 });
 
 //Delete Uploads file
-app.get('/delete/:image/:id', function(req, res) {
+app.get('/delete/:id', function(req, res) {
     var id = req.params.id;
-    var image = req.params.image;
-    var file = __dirname + '/public/images/uploads/' + image;
+    var file = req.params.image;
     Uploads.destroy({
         where: {
             id: id
         }
     }).then(function() {
-        fs.unlink(file);
+        // fs.unlink(file);
         Comments.destroy({
             where: {
                 uploadId: id

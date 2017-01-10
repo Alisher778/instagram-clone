@@ -12,11 +12,11 @@
         </div>
         <span class="timeago"><%= upload.createdAt%></span>
       </div>
-      
+
       <div class="panel-image">
-        <img src="/images/uploads/<%= upload.image %>" class="img-fluid" alt="Responsive image" class="panel-image-preview" style="width: 100%; height: 100%"/>
+        <img src="<%= upload.image %>" class="img-fluid" alt="Responsive image" class="panel-image-preview" style="width: 100%; height: 100%"/>
       </div>
-      
+  
       <section>
         <div class="comments">
           <ul id="<%=upload.id%>"></ul>
@@ -33,13 +33,13 @@
       <div class="panel-footer text-center">
         <ul class="more">
           <li>
-            <a href="/images/<%=upload.image%>" title="Download"><span class="glyphicon glyphicon-download"></span></a>
+            <a href="<%=upload.image%>" title="Download"><span class="glyphicon glyphicon-download"></span></a>
           </li>
           <li title="Edit">
             <a href="/uploads/<%= upload.id %>" class="moreLinks"><span class="glyphicon glyphicon-pencil"></span></a>
           </li>
           <li title="Delete">
-            <a href="/delete/<%= upload.image%>/<%= upload.id%>" class="moreLinks"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="/delete/<%= upload.id%>" class="moreLinks"><span class="glyphicon glyphicon-remove"></span></a>
           </li>
         </ul>
         
