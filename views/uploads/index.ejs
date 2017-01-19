@@ -1,5 +1,8 @@
 <% include ../template/header.ejs %>
 <% include ../template/nav.ejs %>
+
+
+</script>
 <div class="container">
   <% upload.forEach(function(upload){%>
   <div class="col-xs-12 col-md-8 col-md-offset-2">
@@ -7,10 +10,12 @@
       
       <div class="panel-body">
         <div class="info">
-          <h4><%= upload.title%></h4>
+        <img src="<% upload.avatar%>" alt="" class="avatar">
+          <a href="/users/<%= upload.userId%>"><%= upload.userEmail%></a>
+          <span><%= upload.title%></span>
           <p><%= upload.description%></p>
         </div>
-        <span class="timeago"><%= upload.createdAt%></span>
+        <span class="timeago"><%= moment(upload.createdAt).format("MMM Do YYYY")%></span>
       </div>
 
       <div class="panel-image">

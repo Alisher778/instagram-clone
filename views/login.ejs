@@ -1,5 +1,25 @@
-<form action="/login" method="POST">
-  <input type="text" name="email">
-  <input type="password" name="password">
-  <input type="submit">
-</form>
+<style>
+  body{
+    background-color: #fafafa;
+  };
+</style>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="log-in">
+  <img src="/images/insta.png" alt="">
+
+  <form action="/login" method="POST" autocomplete="off">
+    <input type="text" name="email" placeholder="Email" autofocus="on">
+    <input type="password" name="password" placeholder="Password">
+    <button type="submit">Log in</button>
+  </form>
+
+  <div class="facebook-log-in">
+    <p>OR</p>
+     <a href="#"><i class="fa fa-facebook-official" aria-hidden="true"></i> Log in with Facebook</a>
+  </div>
+</div>
+
+<div class="facebook-sign-up">
+  <span>Don't Have an account?</span><a href="/">Sign up</a>
+</div>

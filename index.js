@@ -14,7 +14,10 @@ var cookieParser  = require('cookie-parser');
 var passwordHash  = require('password-hash');
 var session       = require('express-session');
 var moment        = require('moment');
-
+var passport      = require('passport');
+var Strategy      = require('passport-local').Strategy;
+var flash         = require('connect-flash');
+var moment        = require('moment');
 
 aws.config.update({
     secretAccessKey: process.env.SECRETACCESSKEY,
@@ -72,6 +75,8 @@ var postUploads = multer({
 //     storage: storage
 // });
 
+
+
 app.set('view engine', 'ejs');
 app.set('port', (process.env.PORT || 3000));
 app.set('trust proxy', 1) // trust first proxy 
@@ -81,9 +86,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(flash());
 // app.use(require('connect-multiparty')());
 app.use(cookieParser());
-app.use(session({ secret: 'super-secret' }));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
+
 
 
 // Users sign up Page ------------
@@ -102,12 +113,17 @@ var User = sequelize.define('user', {
 var Uploads = sequelize.define('upload', {
     image: Sequelize.STRING,
     title: Sequelize.STRING,
-    description: Sequelize.TEXT
+    description: Sequelize.TEXT,
+    userId: Sequelize.INTEGER,
+    userEmail: Sequelize.INTEGER,
+    avatar: Sequelize.STRING
 });
 
 var Comments = sequelize.define('comments', {
     comment: Sequelize.TEXT,
-    uploadId: Sequelize.INTEGER
+    uploadId: Sequelize.INTEGER,
+    userId: Sequelize.INTEGER,
+    userEmail: Sequelize.INTEGER
 });
 
 var Like = sequelize.define('like', {
@@ -115,12 +131,16 @@ var Like = sequelize.define('like', {
     uploadId: Sequelize.INTEGER
 })
 
+User.hasMany(Uploads);
+Uploads.belongsTo(User);
 Uploads.hasMany(Comments);
 Comments.belongsTo(Uploads);
-
+Comments.belongsTo(User);
+User.hasMany(Comments);
 
 app.get('/', function(req, res) {
     res.render('users/new');
+
 });
 
 // User info for Show Page
@@ -134,9 +154,56 @@ app.post('/user/sign_up', userUpload.single('images'), function(req, res) {
             password: passwordHash.generate(req.body.password),
             images: req.file.location
         }).then(function(users) {
+            req.session.userId = users.id;
+            req.session.userEmail = users.userName;
+            req.session.avatar = users.images;
             res.redirect('/home');
         });
     });
+});
+
+app.get('/login', function(req, res){
+    res.render('login')
+})
+
+app.post('/login', function(req, res){
+    let email = req.body.email;
+    let password = req.body.password;
+    
+    User.count({where:{email:email}}).then(function (count){
+        if(!count == 0){
+            User.findOne({
+                where: {email: email}
+            }).then(function(users){
+                var pass = passwordHash.verify(req.body.password, users.password);
+                if(pass){
+                    req.session.userId = users.id;
+                    req.session.userEmail = users.userName;
+                    req.session.avatar = users.images;
+                    res.redirect('/home')
+                }else{
+                    res.render('login');
+                }
+            
+            });
+        }else{
+            res.send('Wrong Email');
+        }
+    });
+});
+
+app.get('/logout', function(req, res){
+    req.session.userId = null;
+    res.redirect('/login');
+});
+
+app.use(function(req, res, next) {
+  if (req.session.userId){
+    next();
+    return;
+  }
+    res.redirect('/login');
+    
 });
 
 //get users list
@@ -148,8 +215,32 @@ app.get('/users', function(req, res) {
     });
 });
 
+app.get('/users/:id', function(req, res) {
+    User.findById(req.params.id).then(function(users) {
+        res.render('users/show', {
+            user: users
+        });
+    });
+});
 
+app.get('/test', function(req, res){
+    req.flash('info', 'Flash is back!')
+    res.render('flash', { messages: req.flash('info') });
+})
 //-----------Upload page starts here -----------------------------------
+
+//Get all uploaded images
+app.get('/home', function(req, res) {
+    Uploads.findAll({
+        order: '"createdAt" DESC'
+    }).then(function(uploads) {
+        res.render('uploads/index', {
+            upload: uploads, moment: moment
+        })
+        console.log(req.session.userId)
+    });
+});
+
 
 //New Uploads page
 app.get("/uploads", function(req, res) {
@@ -162,23 +253,16 @@ app.post('/images/upload', postUploads.single('image'), function(req, res) {
         return Uploads.create({
             image: req.file.location,
             title: req.body.title,
-            description: req.body.description
+            description: req.body.description,
+            userId: req.session.userId,
+            userEmail: req.session.userEmail,
+            avatar: req.session.avatar
         }).then(function(uploads) {
             res.redirect('/home');
         });
     });
 });
 
-//Get all uploaded images
-app.get('/home', function(req, res) {
-    Uploads.findAll({
-        order: '"createdAt" DESC'
-    }).then(function(uploads) {
-        res.render('uploads/index', {
-            upload: uploads
-        })
-    });
-});
 
 //Downloading images
 app.get('/images/:id', function(req, res) {
@@ -252,7 +336,9 @@ app.post('/comments/:uploadID/post', function(req, res) {
     sequelize.sync().then(function() {
         return Comments.create({
             comment: req.body.comment,
-            uploadId: id
+            uploadId: id,
+            userId: req.session.userId,
+            userEmail: req.session.userEmail
         }).then(function(comments) {
 
             res.redirect('/home#' + id + 's')

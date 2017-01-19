@@ -1,9 +1,11 @@
 $(document).ready(function(){
     //Comments Form submit
     $('input#commentsForm').keypress(function(event){
-        if(event.which == 13){
-            $('form.comment').submit();
+        
+        if(event.keyCode == 13){
+            $(this).submit();
         }
+
     });
 
     // Get All comments accordingly by Uploads id
@@ -20,7 +22,7 @@ $(document).ready(function(){
         });
 
     })
-    
+
     //Post Comments
 
     // $(function(){
@@ -34,13 +36,5 @@ $(document).ready(function(){
     //         }
     //     })
     // })
-
-
-    //Converting time into words
-    var d = $('span.timeago');
-    for(var i =0; i <d.length; i++){
-        var string = $(d[i]).text().slice(2,24);
-        d.text(string);
-    }
 
 });

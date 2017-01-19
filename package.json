@@ -19,6 +19,7 @@
   "dependencies": {
     "aws-sdk": "^2.7.15",
     "body-parser": "^1.15.2",
+    "connect-ensure-login": "^0.1.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.3",
