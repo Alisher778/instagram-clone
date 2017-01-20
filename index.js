@@ -99,7 +99,10 @@ app.use(session({
 
 // Users sign up Page ------------
 var User = sequelize.define('user', {
-    email: Sequelize.STRING,
+    email: {
+        type: Sequelize.STRING,
+        unique: true
+    },
     fullName: Sequelize.STRING,
     userName: {
         type: Sequelize.STRING,
@@ -123,13 +126,13 @@ var Comments = sequelize.define('comments', {
     comment: Sequelize.TEXT,
     uploadId: Sequelize.INTEGER,
     userId: Sequelize.INTEGER,
-    userEmail: Sequelize.INTEGER
+    userEmail: Sequelize.STRING
 });
 
 var Like = sequelize.define('like', {
     like: Sequelize.INTEGER,
     uploadId: Sequelize.INTEGER
-})
+});
 
 User.hasMany(Uploads);
 Uploads.belongsTo(User);
@@ -150,7 +153,7 @@ app.post('/user/sign_up', userUpload.single('images'), function(req, res) {
         return User.create({
             email: req.body.email,
             fullName: req.body.fullName,
-            userName: req.body.userName,
+            userName: req.body.userName.toString().toLowerCase(),
             password: passwordHash.generate(req.body.password),
             images: req.file.location
         }).then(function(users) {

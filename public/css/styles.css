@@ -69,6 +69,9 @@ ul li {
     padding: 5px 3px;
 }
 
+.comment-span{
+    margin-left: 5px;
+}
 /* #########################  Log In  ###########################*/
 .log-in{
     position: relative;
@@ -166,6 +169,11 @@ ul li {
 .avatar{
     width: 36px;
     border-radius: 50%;
+}
+.description{
+    padding: 7px;
+    margin-left: 15px;
+    font-weight: 500;
 }
 
 @media screen and (max-width: 480px) {

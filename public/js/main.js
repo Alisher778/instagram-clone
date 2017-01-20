@@ -1,12 +1,21 @@
 $(document).ready(function(){
     //Comments Form submit
-    $('input#commentsForm').keypress(function(event){
-        
-        if(event.keyCode == 13){
-            $(this).submit();
-        }
+    $('input#commentsForm').keydown(function(event){
+       
+        if (event.which == 13) {
 
+            $("form.comment").submit(function(){
+                event.preventDefault();
+                $(this).submit();
+                
+                return false;
+            });
+
+            
+        }
+        
     });
+
 
     // Get All comments accordingly by Uploads id
     $(function(){
@@ -16,7 +25,7 @@ $(document).ready(function(){
             url: "/comments",
             success: function(comments){
                 $.each(comments, function(i, comments){
-                    $('#'+comments.uploadId).append('<li>'+comments.comment+'</li>')
+                    $('#'+comments.uploadId).append('<li>'+'<a href="/users/'+comments.userId+'">'+comments.userEmail+'</a>'+'<span class="comment-span">'+comments.comment+'</span>'+'</li>')
                 });
             }
         });
