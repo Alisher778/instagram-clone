@@ -335,7 +335,6 @@ app.get('/comments', function(req, res) {
 
 app.post('/comments/:uploadID/post', function(req, res) {
     var id = req.params.uploadID;
-    console.log(id);
     sequelize.sync().then(function() {
         return Comments.create({
             comment: req.body.comment,

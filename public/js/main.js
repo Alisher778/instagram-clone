@@ -4,13 +4,7 @@ $(document).ready(function(){
        
         if (event.which == 13) {
 
-            $("form.comment").submit(function(){
-                event.preventDefault();
-                $(this).submit();
-                
-                return false;
-            });
-
+            $("form.comment").submit();
             
         }
         
@@ -28,7 +22,6 @@ $(document).ready(function(){
 
                     $('#'+comments.uploadId).append('<li>'+'<a href="/users/'+comments.userId+'">'+comments.userEmail+'</a>'+'<span class="comment-span">'+comments.comment+'</span>'+'</li>')
 
-                    $('#'+comments.uploadId).append('<li>'+'<a href="/users/'+comments.userId+'">'+comments.userEmail+'</a>'+'<span>'+comments.comment+'</span>'+'</li>')
                 });
             }
         });
