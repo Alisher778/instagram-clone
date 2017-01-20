@@ -25,11 +25,10 @@ $(document).ready(function(){
             url: "/comments",
             success: function(comments){
                 $.each(comments, function(i, comments){
-<<<<<<< HEAD
+
                     $('#'+comments.uploadId).append('<li>'+'<a href="/users/'+comments.userId+'">'+comments.userEmail+'</a>'+'<span class="comment-span">'+comments.comment+'</span>'+'</li>')
-=======
+
                     $('#'+comments.uploadId).append('<li>'+'<a href="/users/'+comments.userId+'">'+comments.userEmail+'</a>'+'<span>'+comments.comment+'</span>'+'</li>')
->>>>>>> 739ecf9e4388c487a1b13beaf5a7798f3ad84743
                 });
             }
         });

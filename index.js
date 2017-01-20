@@ -118,7 +118,7 @@ var Uploads = sequelize.define('upload', {
     title: Sequelize.STRING,
     description: Sequelize.TEXT,
     userId: Sequelize.INTEGER,
-    userEmail: Sequelize.INTEGER,
+    userEmail: Sequelize.STRING,
     avatar: Sequelize.STRING
 });
 
