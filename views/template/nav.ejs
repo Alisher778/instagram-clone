@@ -21,13 +21,14 @@
       <ul class="nav navbar-nav navbar-right" id="icons">
         <li><a href="/uploads"><img src="/images/add.jpg" alt=""></a></li>
         <li><a href="#"><img src="/images/like.png" alt=""></a></li>
-        <li><a href="/users"><img src="/images/user.png" alt="" style="margin-top: -3px"> </a></li>
+        <li><a href="/users/<%= current_user %>"><img src="/images/user.png" alt="" style="margin-top: -3px"> </a></li>
         <li><a href="/logout">Log Out</a></li>
       </ul>
       </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+
 
 <style>
   div#log-container{

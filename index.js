@@ -25,57 +25,61 @@ aws.config.update({
     region: 'us-east-1'
 });
 
-var s3 = new aws.S3();
-
-var userUpload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'clone-of-instagram/users',
-        key: function (req, file, cb) {
-            console.log(file);
-            cb(null, Date.now() + file.originalname);
-        }
-    })
-});
-
-var postUploads = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'clone-of-instagram/uploads',
-        key: function (req, file, cb) {
-            console.log(file);
-            cb(null, Date.now() + file.originalname);
-        }
-    })
-});
 
 
+    var s3 = new aws.S3();
+
+    var userUpload = multer({
+        storage: multerS3({
+            s3: s3,
+            bucket: 'clone-of-instagram/users',
+            key: function (req, file, cb) {
+                console.log(file);
+                cb(null, Date.now() + file.originalname);
+            }
+        })
+    });
+
+    var postUploads = multer({
+        storage: multerS3({
+            s3: s3,
+            bucket: 'clone-of-instagram/uploads',
+            key: function (req, file, cb) {
+                console.log(file);
+                cb(null, Date.now() + file.originalname);
+            }
+        })
+    });
+
+    
+//
 // var userStorage = multer.diskStorage({
-//     destination: function(req, file, cb) {
-//         cb(null, './public/images/users')
-//     },
-//     filename: function(req, file, cb) {
-//         cb(null, Date.now() + file.originalname);
-//     }
-// })
-// var userUpload = multer({
-//     storage: userStorage
-// });
+//         destination: function(req, file, cb) {
+//             charb(null, './public/images/users')
+//         },
+//         filename: function(req, file, cb) {
+//             cb(null, Date.now() + file.originalname);
+//         }
+//     });
 
-// var storage = multer.diskStorage({
-//     destination: function(req, file, cb) {
-//         cb(null, './public/images/uploads')
-//     },
-//     filename: function(req, file, cb) {
-//         cb(null, Date.now() + file.originalname);
-//     }
-// })
+//     var userUpload = multer({
+//         storage: userStorage
+//     });
 
-// var postUploads = multer({
-//     storage: storage
-// });
+//     var storage = multer.diskStorage({
+//         destination: function(req, file, cb) {
+//             cb(null, './public/images/uploads')
+//         },
+//         filename: function(req, file, cb) {
+//             cb(null, Date.now() + file.originalname);
+//         }
+//     })
 
+//     var postUploads = multer({
+//         storage: storage
+//     });
 
+// 
 
 app.set('view engine', 'ejs');
 app.set('port', (process.env.PORT || 3000));
@@ -117,6 +121,8 @@ var Uploads = sequelize.define('upload', {
     image: Sequelize.STRING,
     title: Sequelize.STRING,
     description: Sequelize.TEXT,
+    fileName: Sequelize.STRING,
+    mimetype: Sequelize.STRING,
     userId: Sequelize.INTEGER,
     userEmail: Sequelize.STRING,
     avatar: Sequelize.STRING
@@ -213,23 +219,19 @@ app.use(function(req, res, next) {
 app.get('/users', function(req, res) {
     User.findAll().then(function(users) {
         res.render('users/index', {
-            user: users
+            user: users, current_user: req.session.userEmail
         });
     });
 });
 
-app.get('/users/:id', function(req, res) {
-    User.findById(req.params.id).then(function(users) {
+app.get('/users/:current_user', function(req, res) {
+    User.findOne({where: {userName: req.session.userEmail }}).then(function(users) {
         res.render('users/show', {
-            user: users
+            user: users, moment: moment, current_user: req.session.userEmail
         });
     });
 });
 
-app.get('/test', function(req, res){
-    req.flash('info', 'Flash is back!')
-    res.render('flash', { messages: req.flash('info') });
-})
 //-----------Upload page starts here -----------------------------------
 
 //Get all uploaded images
@@ -238,7 +240,7 @@ app.get('/home', function(req, res) {
         order: '"createdAt" DESC'
     }).then(function(uploads) {
         res.render('uploads/index', {
-            upload: uploads, moment: moment
+            upload: uploads, moment: moment, current_user: req.session.userEmail
         })
         console.log(req.session.userId)
     });
@@ -247,7 +249,7 @@ app.get('/home', function(req, res) {
 
 //New Uploads page
 app.get("/uploads", function(req, res) {
-    res.render('uploads/new');
+    res.render('uploads/new', {current_user: req.session.userEmail});
 });
 
 //Create upload images page
@@ -257,6 +259,8 @@ app.post('/images/upload', postUploads.single('image'), function(req, res) {
             image: req.file.location,
             title: req.body.title,
             description: req.body.description,
+            mimetype: req.file.mimetype,
+            fileName: Date.now() + req.file.originalname,
             userId: req.session.userId,
             userEmail: req.session.userEmail,
             avatar: req.session.avatar
@@ -278,7 +282,7 @@ app.get('/images/:id', function(req, res) {
 app.get('/uploads/:id', function(req, res) {
     Uploads.findById(req.params.id).then(function(uploads) {
         res.render('uploads/edit', {
-            upload: uploads
+            upload: uploads, current_user: req.session.userEmail
         });
     });
 });
@@ -302,15 +306,24 @@ app.post('/uploads/edit/:id', function(req, res) {
 });
 
 //Delete Uploads file
-app.get('/delete/:id', function(req, res) {
-    var id = req.params.id;
-    var file = req.params.image;
+app.get('/delete/:id/:file', function(req, res) {
+    var id  = req.params.id;
+    var file = req.params.file;
     Uploads.destroy({
         where: {
             id: id
         }
     }).then(function() {
-        // fs.unlink(file);
+        var s3 = new aws.S3();
+        var params = {
+            Bucket: 'clone-of-instagram/uploads',
+            Key: file
+        };
+        s3.deleteObject(params, function(err, data) {
+         if (err) console.log(err, err.stack); // an error occurred
+         else     console.log(data);           // successful response
+        });
+
         Comments.destroy({
             where: {
                 uploadId: id

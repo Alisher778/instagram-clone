@@ -10,9 +10,10 @@
             <img class="media-object" src="<%= user.images%>">
           </a>
           <div class="media-body">
-            <h4 class="media-heading"><%= user.fullName%></h4>
-            <p><span class="label label-info"><%= user.email %></span> <span class="label label-warning">Followers</span></p>
+            <h4 class="media-heading">Name: <%= user.fullName%></h4>
+            <p><span class="label label-info">Email: <%= user.email %></span> <span class="label label-warning">User name: <%= user.userName %></span></p>
             <p>
+            <p><label for="">Joined:</label> <%= moment(user.createdAt).format("MMM Do YYYY")%> </p>
               <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-comment"></span> Message</a>
               <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-heart"></span> Following</a>
               <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Unfollow</a>
