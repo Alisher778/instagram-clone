@@ -224,6 +224,15 @@ app.get('/users', function(req, res) {
     });
 });
 
+app.get('/users/:id', function(req, res) {
+    var id = req.params.id;
+    User.findById(id).then(function(users) {
+        res.render('users/show', {
+            user: users, moment: moment, current_user: req.session.userEmail
+        });
+    });
+});
+
 app.get('/users/:current_user', function(req, res) {
     User.findOne({where: {userName: req.session.userEmail }}).then(function(users) {
         res.render('users/show', {
