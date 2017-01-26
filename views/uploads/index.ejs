@@ -10,7 +10,7 @@
       <div class="panel-body">
         <div class="info">
         <a href="/users/<%= upload.userId%>">
-          <img src="<%= upload.avatar%>" alt="" class="avatar">
+          <img src="<%= upload.avatar %>" alt="" class="avatar">
           <%= upload.userEmail%>
         </a>
           <span><%= upload.title%></span>
@@ -37,7 +37,7 @@
         <div>
           <form action="/comments/<%= upload.id%>/post" method="post" class="comment">
             <div id="formPosition">
-              <img src="/images/like.png" alt=""/> 
+              <img src="/images/like.png" alt="" data-user="<%= current_user %>" data-upload="<%= upload.id %>"class="like" /> 
               <input type="text" data-id="<%= upload.id%>" name="comment" id="commentsForm" placeholder="Add a comment..." />
             </div>
           </form>

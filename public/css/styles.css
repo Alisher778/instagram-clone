@@ -31,6 +31,7 @@ input#commentsForm {
 form img {
     width: 40px;
     margin: 15px;
+    cursor: pointer;
 }
 form.comment {
     border-top: 1px solid rgb(239, 239, 239);
