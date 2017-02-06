@@ -4,11 +4,11 @@
 
 
 <p>You can see <a href="https://instagram-nycda.herokuapp.com/">Demo</a> visiting the link.</p>
-<p>For access you can use <b>Username:</b><i>admin@example.com</i> & <b>Password:</b><i>password</i></p>
+<p>For access you can use <b>Username:</b> <i>admin@example.com</i> & <b>Password:</b> <i>password</i></p>
 
   <ul>
-    <li>-User can create, edit, delete Posts</li>
-    <li>-User can write comments for posts</li>
+    <li>User can create, edit, delete Posts</li>
+    <li>User can write comments for posts</li>
   </ul>
   
   
