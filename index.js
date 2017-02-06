@@ -228,18 +228,19 @@ app.get('/users/:id', function(req, res) {
     var id = req.params.id;
     User.findById(id).then(function(users) {
         res.render('users/show', {
-            user: users, moment: moment, current_user: req.session.userEmail
+            user: users, moment: moment, current_user: req.session.userId
         });
     });
 });
 
-app.get('/users/:current_user', function(req, res) {
-    User.findOne({where: {userName: req.session.userEmail }}).then(function(users) {
-        res.render('users/show', {
-            user: users, moment: moment, current_user: req.session.userEmail
-        });
-    });
-});
+// app.get('/users/:current_user', function(req, res) {
+//     User.findAll({where: {userName: req.session.userEmail }}).then(function(users) {
+//         res.render('users/show', {
+//             user: users, moment: moment, current_user: req.session.userEmail
+//         });
+
+//     });
+// });
 
 //-----------Upload page starts here -----------------------------------
 
@@ -249,7 +250,7 @@ app.get('/home', function(req, res) {
         order: '"createdAt" DESC'
     }).then(function(uploads) {
         res.render('uploads/index', {
-            upload: uploads, moment: moment, current_user: req.session.userEmail
+            upload: uploads, moment: moment, current_user: req.session.userId
         })
         console.log(req.session.userId)
     });
@@ -258,7 +259,7 @@ app.get('/home', function(req, res) {
 
 //New Uploads page
 app.get("/uploads", function(req, res) {
-    res.render('uploads/new', {current_user: req.session.userEmail});
+    res.render('uploads/new', {current_user: req.session.userId});
 });
 
 //Create upload images page

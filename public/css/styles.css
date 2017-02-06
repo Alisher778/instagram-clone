@@ -37,12 +37,12 @@ form.comment {
     border-top: 1px solid rgb(239, 239, 239);
     width: 92%;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
     color: black;
 }
 #formPosition {
     position: relative;
-    left: -47px;
+    left: auto;
 }
 ul li {
     list-style: none;

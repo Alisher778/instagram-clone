@@ -1,67 +1,66 @@
-<nav class="navbar">
-  <div class="container-fluid" id="log-container">
-  <div class="col-lg-12 col-md-12 col-sm-12">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-1">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/home" id="logo"><img src="/images/logo.png" alt=""></a>
-    </div>
+<div class="nav-bar">
+  <nav class="navbar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/home"><img class="d-inline-block align-top" src="/images/logo.png" alt=""></a>
+      </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    
-        <div class="col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-1">
-          <input type="text" class="form-control" placeholder="Search" id="search">
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <form class="navbar-form navbar-center">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" style="width:300px">
+          <button type="submit" class="btn btn-default">Submit</button>
         </div>
-    
-      <ul class="nav navbar-nav navbar-right" id="icons">
-        <li><a href="/uploads"><img src="/images/add.jpg" alt=""></a></li>
-        <li><a href="#"><img src="/images/like.png" alt=""></a></li>
-        <li><a href="/users/<%= current_user %>"><img src="/images/user.png" alt="" style="margin-top: -3px"> </a></li>
+        
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/uploads"><i class="fa fa-instagram" aria-hidden="true"></i></i></a></li>
+        <li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+        <li><a href="/users/<%= current_user %>"><i class="fa fa-user-o" aria-hidden="true"></i></a></li>
         <li><a href="/logout">Log Out</a></li>
       </ul>
-      </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
-</nav>
+    
+  </nav>
+</div>
 
 
 <style>
-  div#log-container{
-    margin:13px auto;
+.container-fluid{
+  text-align: center;
+}
+  .navbar-center{
+    float: none;
+    display: inline-block;
   }
- input#search{
-    height: 26px;
-    margin-top: 12px;
-    background: #fafafa;
-    border: solid 1px #dbdbdb;
-    outline: none;
+  .navbar-brand>img{
+    height: 30px;
   }
-  input.form-control:focus{
-    outline: none;
+  .navbar-toggle .icon-bar{
+    background-color: #000000;
   }
-  #logo img{
-    width: 175px;
-    height: auto;
-    margin-top: -9px;
+  .navbar-toggle{
+    border: 1px solid #000000;
   }
-  nav.navbar{
-    border-bottom: 2px solid #efefef;
-    height: 77px;
-    background-color: #fff;
+  .fa{
+    font-size: 26px;
+    color: rgba(0, 0, 0, 0.74);
   }
-  #icons img{
-    width: 35px;
-    padding: 0;
-  }
-  #icons li a:focus, #icons li a:hover{
-    text-decoration: none;
-    background-color: rgba(238, 238, 238, 0);
+  .nav>li{
+    cursor: pointer;
   }
   
-
+  @media (max-width: 768px){
+    div#bs-example-navbar-collapse-1{
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+  } 
+  }
 </style>
